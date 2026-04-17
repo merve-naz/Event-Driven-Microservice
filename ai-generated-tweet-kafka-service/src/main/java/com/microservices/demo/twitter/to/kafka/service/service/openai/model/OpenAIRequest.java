@@ -1,0 +1,38 @@
+package com.microservices.demo.twitter.to.kafka.service.service.openai.model;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class OpenAIRequest {
+    private String model;
+    private int max_completion_tokens;
+    private double temperature;
+    private List<Message> messages;
+
+
+    @Data
+    @Builder
+    public static class Message {
+        private String role;
+        private List<Content> content;
+    }
+
+    @Data
+    @Builder
+    public static class Content {
+        private String text;
+        private String type;
+    }
+
+
+
+}
