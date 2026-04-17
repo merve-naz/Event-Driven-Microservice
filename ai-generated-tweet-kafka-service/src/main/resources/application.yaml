@@ -23,7 +23,7 @@ twitter-to-kafka-service:
 spring:
    ai:
      openai:
-       api-key: ${OPENAI_API_KEY}
+       api-key: "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
        url: "https://api.openai.com/v1/chat/completions"
        model: "gpt-4o-mini"
        chat:

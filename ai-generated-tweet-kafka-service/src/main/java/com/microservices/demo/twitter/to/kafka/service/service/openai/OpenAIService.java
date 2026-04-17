@@ -1,28 +1,28 @@
 package com.microservices.demo.twitter.to.kafka.service.service.openai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microservices.demo.twitter.to.kafka.service.config.AIGeneratedTweetToKafkaServiceData;
-import com.microservices.demo.twitter.to.kafka.service.exception.AIGeneratedTweetToKafkaException;
-import com.microservices.demo.twitter.to.kafka.service.service.AIService;
-import com.microservices.demo.twitter.to.kafka.service.service.openai.model.OpenAIRequest;
-import com.microservices.demo.twitter.to.kafka.service.service.openai.model.OpenAIResponse;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.stereotype.Service;
+//import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.microservices.demo.twitter.to.kafka.service.config.AIGeneratedTweetToKafkaServiceData;
+//import com.microservices.demo.twitter.to.kafka.service.exception.AIGeneratedTweetToKafkaException;
+//import com.microservices.demo.twitter.to.kafka.service.service.AIService;
+//import com.microservices.demo.twitter.to.kafka.service.service.openai.model.OpenAIRequest;
+//import com.microservices.demo.twitter.to.kafka.service.service.openai.model.OpenAIResponse;
+//import org.apache.hc.client5.http.classic.methods.HttpPost;
+//import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+//import org.apache.hc.client5.http.impl.classic.HttpClients;
+//import org.apache.hc.core5.http.HttpHeaders;
+//import org.apache.hc.core5.http.io.entity.EntityUtils;
+//import org.apache.hc.core5.http.io.entity.StringEntity;
+//import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+//import org.springframework.context.annotation.Conditional;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.List;
+//import java.util.stream.Collectors;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Service
-@ConditionalOnProperty(name = "twitter-to-kafka-service.ai-service", havingValue = "OpenAI" )
-public class OpenAIService implements AIService {
+//@Service
+//@ConditionalOnProperty(name = "twitter-to-kafka-service.ai-service", havingValue = "OpenAI" )
+/*public class OpenAIService implements AIService {
 
     private final AIGeneratedTweetToKafkaServiceData configData;
     private final ObjectMapper objectMapper;
@@ -85,4 +85,4 @@ public class OpenAIService implements AIService {
                 .map(choice -> choice.getMessage().getContent())
                 .collect(Collectors.joining("\n"));
     }
-}
+}*/

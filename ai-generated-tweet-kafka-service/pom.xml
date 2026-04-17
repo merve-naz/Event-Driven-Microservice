@@ -26,18 +26,26 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Removed httpclient5 because it conflicted with Spring AI's internal dependencies (NoSuchMethodError) -->
+        <!--
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
         </dependency>
-        <dependency>
+        -->
+        <!-- Removed jackson-databind since it is already provided by Spring Boot -->
+        <!-- <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
+        </dependency> -->
+        <!-- Removed due to conflict with Spring AI -->
+        <!--
         <dependency>
             <groupId>com.openai</groupId>
             <artifactId>openai-java</artifactId>
         </dependency>
+             -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
