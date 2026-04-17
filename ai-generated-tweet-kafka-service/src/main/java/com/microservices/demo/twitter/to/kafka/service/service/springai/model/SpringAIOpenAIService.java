@@ -1,6 +1,6 @@
 package com.microservices.demo.twitter.to.kafka.service.service.springai.model;
 
-import com.microservices.demo.twitter.to.kafka.service.config.AIGeneratedTweetToKafkaServiceData;
+import com.microservices.demo.config.AIGeneratedTweetToKafkaServiceData;
 import com.microservices.demo.twitter.to.kafka.service.service.AIService;
 //import com.microservices.demo.twitter.to.kafka.service.service.openai.OpenAIService;
 

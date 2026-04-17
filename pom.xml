@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<modules>
 		<module>ai-generated-tweet-kafka-service</module>
+		<module>app-config-data</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -55,6 +56,12 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+				<dependency>
+					<groupId>com.microservices.demo</groupId>
+					<artifactId>app-config-data</artifactId>
+					<version>${project.version}</version>
+				</dependency>
 
 			<dependency>
 				<groupId>org.twitter4j</groupId>
