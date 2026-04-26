@@ -1,0 +1,5 @@
+name: ${COMPOSE_PROJECT_NAME}
+version: '3.7'
+networks:
+  application:
+    driver: bridge

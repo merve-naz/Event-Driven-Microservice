@@ -2,8 +2,6 @@ package com.microservices.demo.twitter.to.kafka.service.service.springai.model;
 
 import com.microservices.demo.config.AIGeneratedTweetToKafkaServiceData;
 import com.microservices.demo.twitter.to.kafka.service.service.AIService;
-//import com.microservices.demo.twitter.to.kafka.service.service.openai.OpenAIService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;

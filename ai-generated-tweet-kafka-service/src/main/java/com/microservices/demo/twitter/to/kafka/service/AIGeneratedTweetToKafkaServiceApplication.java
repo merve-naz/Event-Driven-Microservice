@@ -3,6 +3,7 @@ package com.microservices.demo.twitter.to.kafka.service;
 
 import com.microservices.demo.config.AIGeneratedTweetToKafkaServiceData;
 import com.microservices.demo.twitter.to.kafka.service.init.StreamInitializer;
+import com.microservices.demo.twitter.to.kafka.service.init.impl.KafkaStreamInitializer;
 import com.microservices.demo.twitter.to.kafka.service.runner.AIStreamRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -27,11 +28,17 @@ public class AIGeneratedTweetToKafkaServiceApplication implements CommandLineRun
     private final AIStreamRunner aiStreamRunner;
     private final TaskScheduler taskScheduler;
 
-    public AIGeneratedTweetToKafkaServiceApplication(AIGeneratedTweetToKafkaServiceData configData, StreamInitializer streamInitializer, AIStreamRunner aiStreamRunner, TaskScheduler taskScheduler) {
+    public AIGeneratedTweetToKafkaServiceApplication(
+            AIGeneratedTweetToKafkaServiceData configData,
+            StreamInitializer streamInitializer,
+            AIStreamRunner aiStreamRunner,
+            TaskScheduler taskScheduler,
+            KafkaStreamInitializer kafkaStreamInitializer) {
         this.configData = configData;
         this.streamInitializer = streamInitializer;
         this.aiStreamRunner = aiStreamRunner;
         this.taskScheduler = taskScheduler;
+
     }
 
     public static void main(String[] args) {
