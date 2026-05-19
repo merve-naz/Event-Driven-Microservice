@@ -60,13 +60,13 @@ public class TwitterKafkaProducer implements KafkaProducer<String, TwitterAvroMo
             if (ex == null) {
                 // result kafka'nın bize gönderdiği metadata bilgilerini içerir
                 RecordMetadata metadata = result.getRecordMetadata();
-                LOG.info(
+                /*LOG.info(
                         "Received new metadata. Topic: {}; Partition {}; Offset: {}, Timestamp: {}",
                         metadata.topic(),
                         metadata.partition(),
                         metadata.offset(),
                         metadata.timestamp()
-                );
+                );*/
             } else {
                 if (ex != null) {
                     LOG.error(

@@ -7,6 +7,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,10 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class SpringAIOpenAIService  implements AIService{
+public class SpringAIOpenAIService  implements AIService{ // AIService arayüzünü implement ediyoruz, böylece bu sınıfın generateTweet() metodunu kullanarak tweet üretebiliriz. Bu, uygulamanın diğer bölümlerinin AI hizmetiyle etkileşim kurmasını sağlar ve farklı AI sağlayıcılarıyla kolayca entegrasyon yapmamıza olanak tanır.
+//Provider destegi
 
-    private  final ChatClient chatClient;
+    private  final ChatClient chatClient; // Spring AI ChatClient, OpenAI'ye istek göndermek için kullanılır. ChatClient, Spring AI tarafından sağlanan bir arayüzdür ve farklı AI sağlayıcılarıyla entegrasyon sağlar. Bu sayede, OpenAI gibi bir sağlayıcıya kolayca bağlanabiliriz.
     private final AIGeneratedTweetToKafkaServiceData configData;
 
 
@@ -34,7 +36,6 @@ public class SpringAIOpenAIService  implements AIService{
     public String generateTweet() {
         BeanOutputConverter<TweetResponse> converter = new BeanOutputConverter(TweetResponse.class);
         log.info("Generating tweet with Spring AI OpenAI Service...");
-        log.info("converter format: {}", converter.getFormat());
         PromptTemplate promptTemplate = new PromptTemplate(tweetPrompt);
         Prompt prompt = promptTemplate.create(Map.of(
                 configData.getKeywordsPlaceholder().replace("{", "").replace("}", ""),
@@ -42,12 +43,16 @@ public class SpringAIOpenAIService  implements AIService{
                 "format", converter.getFormat()
         ));
 
-        String modelResponse = chatClient.prompt(prompt).call().content();
-        log.info("Generated tweet: {}", modelResponse);
+        String modelResponse = chatClient.prompt(prompt).
+                options(
+                        OpenAiChatOptions.builder()
+                        .model(configData.getOpenAi().getModel())
+                        .maxTokens(Math.toIntExact(
+                                Long.valueOf(configData.getOpenAi().getMaxCompletionTokens()))
+                        )
+                        .temperature(Double.valueOf(configData.getOpenAi().getTemperature()))
+                        .build()).call().content();
         return modelResponse;
-
-
-
 
 
     }

@@ -19,4 +19,5 @@ public class KafkaConfigData {
     private Short replicationFactor;
     private Integer numPartitions;
 
-}
+} // Başka yerde KafkaConfigData sınıfı tanımlanmış olabilir, bu nedenle KafkaConfigData sınıfının içeriği ve özellikleri farklı olabilir. Ancak genel olarak, KafkaConfigData sınıfı Kafka ile ilgili yapılandırma verilerini içeren bir sınıftır ve genellikle Spring Boot uygulamalarında @ConfigurationProperties anotasyonu ile kullanılır.
+// Bu sınıf, Kafka bağlantısı, topic oluşturma, schema registry gibi konfigürasyonları içerebilir.

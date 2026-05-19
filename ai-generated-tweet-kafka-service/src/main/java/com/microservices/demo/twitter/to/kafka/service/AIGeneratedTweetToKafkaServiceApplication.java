@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 @SpringBootApplication
 public class AIGeneratedTweetToKafkaServiceApplication implements CommandLineRunner {
 
-    private final AIGeneratedTweetToKafkaServiceData configData;
+    private final AIGeneratedTweetToKafkaServiceData configData; //
     private final StreamInitializer streamInitializer;
     private final AIStreamRunner aiStreamRunner;
     private final TaskScheduler taskScheduler;
@@ -49,12 +49,19 @@ public class AIGeneratedTweetToKafkaServiceApplication implements CommandLineRun
 
     @Override
     public void run(String... args) throws Exception {
-        if (streamInitializer.init()) {
-            taskScheduler.scheduleAtFixedRate(aiStreamRunner, Duration.of(
-                    configData.getScheduleDurationMs(), ChronoUnit.SECONDS
-            ));
+        log.info("Uygulama baslatiliyor...");
+
+        // init() metodunu bir değişkene alıp tek seferde kontrol edelim
+        // Eğer init() içinde sonsuz döngü varsa, bu satırı geçemez.
+        boolean isInitialized = streamInitializer.init();
+
+        System.out.println("stream Initializer sonucu(kafka and topic check): " + isInitialized);
+
+        if (isInitialized) {
+            taskScheduler.scheduleAtFixedRate(aiStreamRunner,
+                    Duration.ofMillis(configData.getScheduleDurationMs()));
         } else {
-            throw new RuntimeException("Stream initialization failed");
+            throw new RuntimeException("Kafka baslatilamadi!");
         }
     }
 }

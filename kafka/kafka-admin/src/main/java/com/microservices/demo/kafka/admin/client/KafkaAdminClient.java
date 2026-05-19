@@ -12,6 +12,7 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,35 +34,53 @@ public class KafkaAdminClient {
         this.retryTemplate = retryTemplate;
         this.webClient = webClient;
     }
-
-
     public void checkSchemaRegistry() {
+        int retryCount = 1;
         Integer maxRetry = retryConfigData.getMaxAttempts();
         int multiplier = retryConfigData.getMultiplier().intValue();
         Long sleepTimeMs = retryConfigData.getSleepTimeMs();
-        while (getSchemaRegistryStatus() != HttpStatus.OK) {
-            checkMaxRetry(maxRetry--, retryConfigData.getMaxAttempts());
+
+        while (true) {
+            HttpStatus status = getSchemaRegistryStatus();
+            if (status == HttpStatus.OK) {
+                break;
+            }
+
+            System.out.println("Schema Registry bekleniyor... Alınan Statü: " + status + " | Deneme: " + retryCount);
+
+            if (retryCount >= maxRetry) {
+                throw new KafkaException("Schema Registry max deneme sayısına ulaştı!");
+            }
+
             sleep(sleepTimeMs);
             sleepTimeMs *= multiplier;
+            retryCount++;
         }
-
+        System.out.println("Schema Registry başarıyla doğrulandı (OK).");
     }
-
     private HttpStatus getSchemaRegistryStatus() {
         try {
-            return (HttpStatus) webClient
-                    .method(HttpMethod.GET)
+            return webClient
+                    .get()
                     .uri(kafkaConfigData.getSchemaRegistryUrl())
-                    // request gönderiliyor ve response alınıyor
-                    .exchange()
-                    // gelen response içinden sadece HTTP status code alınıy
-                    .map(clientResponse -> clientResponse.statusCode())
-                    // reactive Mono sonucunu normal senkron değere çevirip bekliyor
+                    .exchangeToMono(response -> {
+                        // Sayısal değer üzerinden kontrol yapalım (daha güvenli)
+                        int statusCode = response.statusCode().value();
+                        if (statusCode >= 200 && statusCode < 300) {
+                            return Mono.just(HttpStatus.OK);
+                        }
+                        return Mono.just(HttpStatus.valueOf(statusCode));
+                    })
+                    // İstek zaman aşımına uğrarsa hata fırlatmasını sağla
+                    .timeout(java.time.Duration.ofSeconds(5))
                     .block();
         } catch (Exception e) {
+            // Log ekle ki hatanın tipini gör (Bağlantı mı reddedildi yoksa 503 mü geldi?)
+            System.out.println("Schema Registry erişim hatası: " + e.getMessage());
             return HttpStatus.SERVICE_UNAVAILABLE;
         }
     }
+
 
     public void createTopics() {
         CreateTopicsResult createTopicResult;

@@ -1,3 +1,7 @@
+logging:
+  level:
+    org.apache.kafka: WARN
+    ch.qos.logback: WARN
 twitter-to-kafka-service:
   streaming-data-keywords:
     - "AI"
@@ -23,7 +27,7 @@ twitter-to-kafka-service:
 spring:
   ai:
     openai:
-      api-key: "sk-proj-xxxx"
+      api-key: "${OPENAI_API_KEY}"
       url: "https://api.openai.com/v1/chat/completions"
       model: "gpt-4o-mini"
       chat:
@@ -46,9 +50,11 @@ kafka-config:
     - twitter-topic
   num-partitions: 3
   replication-factor: 3
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
 
 kafka-producer-config:
-  key-serializer-class: org.apache.kafka.common.serialization.LongSerializer
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
   value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
   compression-type: snappy
   acks: all

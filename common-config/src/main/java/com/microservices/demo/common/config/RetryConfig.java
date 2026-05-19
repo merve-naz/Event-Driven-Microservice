@@ -3,8 +3,6 @@ package com.microservices.demo.common.config;
 import com.microservices.demo.config.RetryConfigData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.RetryPolicy;
-import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -29,6 +27,9 @@ public class RetryConfig {
 
         ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
 
+        // exponentialBackOffPolicy Spring Retry framework içinde vardır.
+        //amacı:  retry denemeleri arasında bekleme süresini belirlemek.
+
         exponentialBackOffPolicy.setInitialInterval(
                 retryConfigData.getInitialIntervalMs());
         exponentialBackOffPolicy.setMaxInterval(
@@ -38,7 +39,7 @@ public class RetryConfig {
 
         retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
 
-        SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy();
+        SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy(); // retry denemelerinin sayısını belirlemek için kullanılır.
         simpleRetryPolicy.setMaxAttempts(
                 retryConfigData.getMaxAttempts());
 

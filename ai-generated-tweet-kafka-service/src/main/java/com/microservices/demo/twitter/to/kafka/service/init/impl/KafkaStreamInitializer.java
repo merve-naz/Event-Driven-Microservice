@@ -23,8 +23,6 @@ public class KafkaStreamInitializer implements StreamInitializer {
     public boolean init() {
         // Kafka stream başlatma işlemleri burada yapılır
         // Örneğin, Kafka topic'lerini oluşturma, bağlantıları açma vb.
-
-        LOG.info("Initializing Kafka Stream...");
         kafkaAdminClient.createTopics(); // Kafka topic'lerini oluşturur
         kafkaAdminClient.checkSchemaRegistry(); // Schema Registry'nin erişilebilir olduğunu kontrol eder
 

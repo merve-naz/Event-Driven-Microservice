@@ -33,7 +33,7 @@
 //        String prompt = configData.getPrompt().replace(
 //                configData.getKeywordsPlaceholder(), String.join(", ", configData.getStreamingDataKeywords())
 //        );
-//        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+//        OpenAIClient client = OpenAIOkHttpClient.fromEnv(); //  OpenAIClient, OpenAI'ye istek göndermek için kullanılan bir sınıftır. OpenAIOkHttpClient ise OpenAIClient'ın OkHttp tabanlı bir implementasyonudur. Bu sınıf, OpenAI API'sine HTTP üzerinden istek göndermek ve yanıtları almak için kullanılır. fromEnv() yöntemi, API anahtarını ve diğer yapılandırma bilgilerini ortam değişkenlerinden alarak bir OpenAIOkHttpClient örneği oluşturur. Bu sayede, API anahtarını kodda saklamak yerine güvenli bir şekilde yönetebiliriz.
 //        ChatCompletionCreateParams.Builder createParams = ChatCompletionCreateParams.builder().
 //                 model(configData.getOpenAi().getModel())
 //                .addDeveloperMessage("You are helping  me to create a tweet content based on the following keywords: " )
