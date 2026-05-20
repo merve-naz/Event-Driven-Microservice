@@ -9,7 +9,8 @@
 		<module>kafka/kafka-admin</module>
 		<module>kafka/kafka-producer</module>
 		<module>common-config</module>
-	</modules>
+        <module>config-server-repository</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
