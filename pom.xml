@@ -10,6 +10,7 @@
 		<module>kafka/kafka-producer</module>
 		<module>common-config</module>
 		<module>config-server</module>
+		<module>playground</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -37,6 +38,7 @@
 		<spring-retry.version>2.0.12</spring-retry.version>
 		<kafka-avro-serializer.version>5.0.4</kafka-avro-serializer.version>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
+		<spring-jasypt.version>3.0.5</spring-jasypt.version>
 	</properties>
 
 	<repositories>
@@ -182,6 +184,18 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.github.ulisesbocchio</groupId>
+				<artifactId>jasypt-spring-boot-starter</artifactId>
+				<version>4.0.4</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-actuator</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

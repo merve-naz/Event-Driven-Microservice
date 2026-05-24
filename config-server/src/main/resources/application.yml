@@ -9,7 +9,14 @@ spring:
     config:
       server:
         git:
-          uri: file:///C:/Users/merve/Desktop/microservices-demo/config-server-repository
+          uri: https://github.com/merve-naz/spring-cloud-config-server-repository.git
+          default-label: main
+          username: merve-naz
+          password: ENC(SIFRELENMIS_TOKEN)
           clone-on-start: true
 
     fail-fast: true
+
+logging:
+  level:
+    ROOT: DEBUG
