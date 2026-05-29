@@ -12,7 +12,7 @@ spring:
           uri: https://github.com/merve-naz/spring-cloud-config-server-repository.git
           default-label: main
           username: merve-naz
-          password: ENC(SIFRELENMIS_TOKEN)
+          password: "{cipher}52c668ec6b5dce809a1098c909d459aeb2356b57c58d1a062e4f82077094df5f8a1830e6d146a550a856e2640dd38525e53bb332c88b9c97a2c461afe4d371edae6eb10dbd4b4b92baeab65f0f3e26d5c2be7a43b38751abbc564fb4d670355bfed71d2cbbc65f236fcb7be59a23e664"
           clone-on-start: true
 
     fail-fast: true
