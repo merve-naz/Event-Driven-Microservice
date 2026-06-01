@@ -12,6 +12,7 @@
 		<module>config-server</module>
 		<module>playground</module>
         <module>kafka-consumer</module>
+        <module>kafka-to-elastic-service</module>
     </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
