@@ -11,7 +11,8 @@
 		<module>common-config</module>
 		<module>config-server</module>
 		<module>playground</module>
-	</modules>
+        <module>kafka-consumer</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
