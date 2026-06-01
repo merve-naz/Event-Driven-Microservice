@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: configserver
+  security:
+    user:
+      name: admin
+      password: 123456
 
   cloud:
     config:
