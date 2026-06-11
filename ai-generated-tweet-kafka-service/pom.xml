@@ -104,24 +104,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
 
-                <configuration>
-                    <image>
-                        <name>
-                            ${project.groupId}/${project.artifactId}:${project.version}
-                        </name>
-                    </image>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <image>-->
+<!--                        <name>-->
+<!--                            ${project.groupId}/${project.artifactId}:${project.version}-->
+<!--                        </name>-->
+<!--                    </image>-->
+<!--                </configuration>-->
 
-                <executions>
-                    <execution>
-                        <phase>install</phase>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>install</phase>-->
 
-                        <goals>
-                            <goal>build-image</goal>
-                        </goals>
+<!--                        <goals>-->
+<!--                            <goal>build-image</goal>-->
+<!--                        </goals>-->
 
-                    </execution>
-                </executions>
+<!--                    </execution>-->
+<!--                </executions>-->
 
             </plugin>
         </plugins>

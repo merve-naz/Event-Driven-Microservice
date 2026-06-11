@@ -34,7 +34,7 @@ public class AIStreamRunner implements  Runnable{
 
                 TwitterAvroModel model = transformer.getTwitterAvroModelFromTwitterStatus(generatedTweet);
 
-                kafkaProducer.send(kafkaConfigData.getTopicName(),String.valueOf(model.getUserId()) , model);
+                kafkaProducer.send(kafkaConfigData.getTopicName(), String.valueOf(model.getUserId()), model);
                 log.info("Tweet sent to kafka");
 
                 Thread.sleep(5000); // 5 saniyede bir tweet üret

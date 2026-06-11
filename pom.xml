@@ -13,7 +13,8 @@
 		<module>playground</module>
         <module>kafka-consumer</module>
         <module>kafka-to-elastic-service</module>
-    </modules>
+		<module>elastic</module>
+	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -36,12 +37,13 @@
 		<openai-java.version>4.8.0</openai-java.version>
 		<spring-ai.version>1.0.0</spring-ai.version>
 		<avro.version>1.12.1</avro.version>
-		<spring-kafka.version>4.0.4</spring-kafka.version>
 		<spring-retry.version>2.0.12</spring-retry.version>
 		<kafka-avro-serializer.version>5.0.4</kafka-avro-serializer.version>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
 		<spring-jasypt.version>3.0.5</spring-jasypt.version>
 		<spring-boot-security.version>3.2.4</spring-boot-security.version>
+
+
 	</properties>
 
 	<repositories>
@@ -53,6 +55,21 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- LOCAL -->
+			<dependency>
+				<groupId>com.microservices.demo</groupId>
+				<artifactId>elastic-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.microservices.demo</groupId>
+				<artifactId>elastic-config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.microservices.demo</groupId>
+				<artifactId>elastic-index-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.microservices.demo</groupId>
 				<artifactId>app-config-data</artifactId>
@@ -169,12 +186,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.springframework.kafka</groupId>
-				<artifactId>spring-kafka</artifactId>
-				<version>${spring-kafka.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.springframework.retry</groupId>
 				<artifactId>spring-retry</artifactId>
 				<version>${spring-retry.version}</version>
@@ -222,6 +233,12 @@
 								<groupId>org.springframework.boot</groupId>
 								<artifactId>spring-boot-configuration-processor</artifactId>
 								<version>${spring-boot.version}</version>
+							</path>
+
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
 							</path>
 						</annotationProcessorPaths>
 					</configuration>

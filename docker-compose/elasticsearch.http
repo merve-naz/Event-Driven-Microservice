@@ -1,0 +1,43 @@
+PUT /twitter-index          -> index oluştur
+GET /twitter-index          -> index bilgisi getir
+DELETE /twitter-index       -> index sil
+POST /twitter-index/_search -> arama yap
+
+
+
+
+PUT http://localhost:9200/twitter-index
+
+
+Content-Type: application/json
+{
+  "mappings": {
+    "properties": {
+      "userId": {
+        "type": "long"
+      },
+      "id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "createdAt": {
+        "type": "date",
+        "format": "yyyy-MM-dd'T'HH:mm:ssZZ"
+      },
+      "text": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      }
+    }
+  }
+}
