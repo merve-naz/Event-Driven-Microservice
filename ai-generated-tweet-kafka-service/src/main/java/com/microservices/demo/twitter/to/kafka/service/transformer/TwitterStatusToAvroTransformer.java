@@ -2,17 +2,20 @@ package com.microservices.demo.twitter.to.kafka.service.transformer;
 
 
 import com.microservices.demo.kafka.avro.model.TwitterAvroModel;
+import com.microservices.demo.twitter.to.kafka.service.service.springai.model.TweetResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TwitterStatusToAvroTransformer {
-    public TwitterAvroModel getTwitterAvroModelFromTwitterStatus(String  tweetText) {
+    public TwitterAvroModel getTwitterAvroModelFromTwitterStatus(TweetResponse tweetText) {
         // TwitterStatus nesnesini TwitterAvroModel'e dönüştürme işlemi burada yapılır
         // Örneğin, gerekli alanları alarak yeni bir TwitterAvroModel oluşturabilirsiniz
+
+        System.out.println("TwitterAvroModel: "+tweetText);
         return TwitterAvroModel.newBuilder()
-                .setId(System.currentTimeMillis())
-                .setUserId(1L)
-                .setText(tweetText)
+                .setId(tweetText.id())
+                .setUserId(tweetText.user().id())
+                .setText(tweetText.text())
                 .setCreatedAt(System.currentTimeMillis())
                 .build();
     } // Bu örnekte, sadece tweetText'i alarak basit bir TwitterAvroModel oluşturulmuştur. Gerçek uygulamada, TwitterStatus nesnesinden daha fazla bilgi alarak daha zengin bir TwitterAvroModel oluşturabilirsiniz.

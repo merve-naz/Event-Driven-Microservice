@@ -33,17 +33,18 @@ public class SpringAIOpenAIService  implements AIService{ // AIService arayüzü
     }
 
     @Override
-    public String generateTweet() {
+    public TweetResponse generateTweet() {
         BeanOutputConverter<TweetResponse> converter = new BeanOutputConverter(TweetResponse.class);
         log.info("Generating tweet with Spring AI OpenAI Service...");
         PromptTemplate promptTemplate = new PromptTemplate(tweetPrompt);
         Prompt prompt = promptTemplate.create(Map.of(
-                configData.getKeywordsPlaceholder().replace("{", "").replace("}", ""),
+                configData.getKeywordsPlaceholder().
+                        replace("{", "").replace("}", ""),
                 String.join(", ", configData.getStreamingDataKeywords()),
                 "format", converter.getFormat()
         ));
 
-        String modelResponse = chatClient.prompt(prompt).
+        TweetResponse modelResponse = chatClient.prompt(prompt).
                 options(
                         OpenAiChatOptions.builder()
                         .model(configData.getOpenAi().getModel())
@@ -51,10 +52,10 @@ public class SpringAIOpenAIService  implements AIService{ // AIService arayüzü
                                 Long.valueOf(configData.getOpenAi().getMaxCompletionTokens()))
                         )
                         .temperature(Double.valueOf(configData.getOpenAi().getTemperature()))
-                        .build()).call().content();
+                        .build()).call().entity(TweetResponse.class);
+
+
         return modelResponse;
-
-
     }
 
 }

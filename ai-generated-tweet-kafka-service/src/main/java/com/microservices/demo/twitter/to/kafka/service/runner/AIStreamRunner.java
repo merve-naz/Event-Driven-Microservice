@@ -4,6 +4,7 @@ import com.microservices.demo.config.KafkaConfigData;
 import com.microservices.demo.kafka.avro.model.TwitterAvroModel;
 import com.microservices.demo.kafka.producer.config.service.KafkaProducer;
 import com.microservices.demo.twitter.to.kafka.service.service.AIService;
+import com.microservices.demo.twitter.to.kafka.service.service.springai.model.TweetResponse;
 import com.microservices.demo.twitter.to.kafka.service.transformer.TwitterStatusToAvroTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class AIStreamRunner implements  Runnable{
     public void run() {
         while (true) { // Sürekli tweet üretmesi için döngü ekleyelim
             try {
-                String generatedTweet = aiService.generateTweet();
+                TweetResponse generatedTweet = aiService.generateTweet();
                 log.info("Generated Tweet: {}", generatedTweet);
 
                 TwitterAvroModel model = transformer.getTwitterAvroModelFromTwitterStatus(generatedTweet);
