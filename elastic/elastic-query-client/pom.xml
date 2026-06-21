@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>elastic</artifactId>
         <groupId>com.microservices.demo</groupId>
-        <artifactId>microservices-demo</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>elastic</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>elastic-query-client</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -18,28 +17,29 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+
         <dependency>
             <groupId>com.microservices.demo</groupId>
-            <artifactId>common-util</artifactId>
+            <artifactId>app-config-data</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <groupId>com.microservices.demo</groupId>
+            <artifactId>elastic-config</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.microservices.demo</groupId>
             <artifactId>elastic-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.microservices.demo</groupId>
-            <artifactId>app-config-data</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.microservices.demo</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
 
-    <modules>
-        <module>elastic-model</module>
-        <module>elastic-config</module>
-        <module>elastic-index-client</module>
-        <module>elastic-query-client</module>
-    </modules>
+    </dependencies>
 </project>

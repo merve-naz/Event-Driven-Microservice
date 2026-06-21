@@ -74,6 +74,10 @@
             <groupId>com.microservices.demo</groupId>
             <artifactId>elastic-index-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.microservices.demo</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

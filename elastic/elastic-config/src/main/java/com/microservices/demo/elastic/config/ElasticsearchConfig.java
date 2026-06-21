@@ -7,6 +7,7 @@ import com.microservices.demo.config.ElasticConfigData;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 //Bu sınıfla birlikte arka planda tam olarak 2 kritik nesne oluşturmuş oldun:
 //
