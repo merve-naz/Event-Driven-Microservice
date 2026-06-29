@@ -11,6 +11,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -33,7 +34,7 @@ public class TwitterIndexModel implements IndexModel {
 
     @Field(type = FieldType.Date)
     @JsonProperty
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 
     @Override

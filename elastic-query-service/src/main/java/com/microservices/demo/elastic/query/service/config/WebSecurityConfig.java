@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.swing.*;
 
 @Configuration
-
 public class WebSecurityConfig {
     private final UserConfigData userConfigData;
 

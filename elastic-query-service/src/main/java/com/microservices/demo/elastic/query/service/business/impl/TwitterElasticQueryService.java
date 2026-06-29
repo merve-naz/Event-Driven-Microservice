@@ -4,6 +4,7 @@ import com.microservices.demo.elastic.model.index.impl.TwitterIndexModel;
 import com.microservices.demo.elastic.query.client.service.ElasticQueryClient;
 import com.microservices.demo.elastic.query.service.business.ElasticQueryService;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
+import com.microservices.demo.elastic.query.service.model.assembler.ElasticQueryServiceResponseModelAssembler;
 import com.microservices.demo.elastic.query.service.transformer.ElasticToResponseModelTransformer;
 import org.springframework.stereotype.Service;
 
@@ -12,26 +13,26 @@ import java.util.List;
 @Service
 public class TwitterElasticQueryService implements ElasticQueryService {
 
-    private final ElasticToResponseModelTransformer transformer;
+    private final ElasticQueryServiceResponseModelAssembler assembler;
     private final ElasticQueryClient<TwitterIndexModel> elasticQueryClient;
 
-    public TwitterElasticQueryService(ElasticToResponseModelTransformer transformer, ElasticQueryClient elasticQueryClient) {
-        this.transformer = transformer;
+    public TwitterElasticQueryService(ElasticQueryServiceResponseModelAssembler assembler, ElasticQueryClient elasticQueryClient) {
+        this.assembler = assembler;
         this.elasticQueryClient = elasticQueryClient;
     }
 
     @Override
     public ElasticQueryServiceResponseModel getDocumentById(String id) {
-        return transformer.getResponseModel(elasticQueryClient.getIndexModelById(id));
+        return assembler.toModel(elasticQueryClient.getIndexModelById(id));
     }
 
     @Override
     public List<ElasticQueryServiceResponseModel> getDocumentsByText(String text) {
-        return transformer.getResponseModels(elasticQueryClient.getIndexModelsByText(text));
+        return  assembler.toModels(elasticQueryClient.getIndexModelsByText(text));
     }
 
     @Override
     public List<ElasticQueryServiceResponseModel> getAllDocuments() {
-        return transformer.getResponseModels(elasticQueryClient.getAllIndexModels());
+      return  assembler.toModels(elasticQueryClient.getAllIndexModels());
     }
 }

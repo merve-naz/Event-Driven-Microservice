@@ -1,6 +1,7 @@
 package com.microservices.demo.elastic.query.service.api;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.demo.elastic.query.service.business.ElasticQueryService;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,13 +9,15 @@ import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/documents")
+@RequestMapping("/documents") //Spring MVC, MappingJackson2HttpMessageConverter aracılığıyla bu nesneyi Jackson (ObjectMapper) kullanarak JSON'a çeviriyor.
 public class ElasticDocumentController {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticDocumentController.class);
     private final ElasticQueryService elasticQueryService;
@@ -43,5 +46,8 @@ public class ElasticDocumentController {
         List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
         return ResponseEntity.ok(response);
     }
+//    Controller Java nesnesi döndürür. DispatcherServlet, HTTP cevabını hazırlarken uygun
+//    HttpMessageConverter'ı seçer. JSON isteniyorsa MappingJackson2HttpMessageConverter,
+//    Jackson (ObjectMapper) kullanarak Java nesnesini JSON'a çevirir ve response body'ye yazar.
 
 }
