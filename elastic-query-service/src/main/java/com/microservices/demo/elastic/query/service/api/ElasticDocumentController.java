@@ -3,7 +3,9 @@ package com.microservices.demo.elastic.query.service.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.demo.elastic.query.service.business.ElasticQueryService;
+import com.microservices.demo.elastic.query.service.mapper.DocumentModelMapper;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
+import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV2;
 import jakarta.validation.constraints.NotEmpty;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
@@ -21,30 +23,49 @@ import java.util.List;
 public class ElasticDocumentController {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticDocumentController.class);
     private final ElasticQueryService elasticQueryService;
+    private final DocumentModelMapper documentModelMapper;
 
-    public ElasticDocumentController(ElasticQueryService elasticQueryService) {
+    public ElasticDocumentController(ElasticQueryService elasticQueryService, DocumentModelMapper documentModelMapper) {
         this.elasticQueryService = elasticQueryService;
+        this.documentModelMapper = documentModelMapper;
     }
 
-    @GetMapping("/")
+    @GetMapping("/v1")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocument() {
-
        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getAllDocuments();
         LOG.info("Getting document from elastic query service: ",response.size());
        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/v1/{id}")
     public ResponseEntity<ElasticQueryServiceResponseModel> getDocumentById(@PathVariable @NotEmpty String id) { // "Nesnenin içindeki validation kurallarını kontrol et."
 
         ElasticQueryServiceResponseModel response = elasticQueryService.getDocumentById(id);
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/v2/{id}")
+    public ResponseEntity<ElasticQueryServiceResponseModelV2> getDocumentByV2Id(@PathVariable @NotEmpty String id) { // "Nesnenin içindeki validation kurallarını kontrol et."
+
+        ElasticQueryServiceResponseModel response = elasticQueryService.getDocumentById(id);
+
+        return ResponseEntity.ok(documentModelMapper.toV2Model(response));
+    }
    // HTTP standartlarında GET isteklerinin bir Body (gövde) taşıması yasaktır veya önerilmez. Veriler sadece URL'in sonuna eklenerek (?text=merve) gönderilebilir.
-   @PostMapping
+   @PostMapping("/v1/get-document-by-text")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody String text) {
         List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/v2/get-document-by-text")
+    public ResponseEntity<List<ElasticQueryServiceResponseModelV2>> getDocumentByTextV2(@RequestBody String text) {
+        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
+        List<ElasticQueryServiceResponseModelV2>  response2 = response.stream().map(
+                documentModelMapper::toV2Model
+        ).toList();
+        return ResponseEntity.ok(response2);
     }
 //    Controller Java nesnesi döndürür. DispatcherServlet, HTTP cevabını hazırlarken uygun
 //    HttpMessageConverter'ı seçer. JSON isteniyorsa MappingJackson2HttpMessageConverter,
