@@ -6,6 +6,7 @@ import com.microservices.demo.elastic.query.service.business.ElasticQueryService
 import com.microservices.demo.elastic.query.service.mapper.DocumentModelMapper;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV2;
+import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV3;
 import jakarta.validation.constraints.NotEmpty;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
@@ -19,18 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/documents") //Spring MVC, MappingJackson2HttpMessageConverter aracılığıyla bu nesneyi Jackson (ObjectMapper) kullanarak JSON'a çeviriyor.
+@RequestMapping(value = "/documents", produces = "application/vnd.api.v1+json") //Spring MVC, MappingJackson2HttpMessageConverter aracılığıyla bu nesneyi Jackson (ObjectMapper) kullanarak JSON'a çeviriyor.
 public class ElasticDocumentController {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticDocumentController.class);
     private final ElasticQueryService elasticQueryService;
-    private final DocumentModelMapper documentModelMapper;
+    private final DocumentModelMapper objectMapper;
 
-    public ElasticDocumentController(ElasticQueryService elasticQueryService, DocumentModelMapper documentModelMapper) {
+    //produces = Accept header'ı.
+    // headers = "X-API-VERSION=2" custom (özel) bir header.
+    public ElasticDocumentController(ElasticQueryService elasticQueryService, DocumentModelMapper objectMapper) {
         this.elasticQueryService = elasticQueryService;
-        this.documentModelMapper = documentModelMapper;
+        this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/v1")
+    @GetMapping("")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocument() {
        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getAllDocuments();
         LOG.info("Getting document from elastic query service: ",response.size());
@@ -38,7 +41,7 @@ public class ElasticDocumentController {
     }
 
 
-    @GetMapping("/v1/{id}")
+    @GetMapping(value= "/{id}", produces = "application/vnd.api.v1+json")
     public ResponseEntity<ElasticQueryServiceResponseModel> getDocumentById(@PathVariable @NotEmpty String id) { // "Nesnenin içindeki validation kurallarını kontrol et."
 
         ElasticQueryServiceResponseModel response = elasticQueryService.getDocumentById(id);
@@ -46,26 +49,18 @@ public class ElasticDocumentController {
     }
 
 
-    @GetMapping("/v2/{id}")
-    public ResponseEntity<ElasticQueryServiceResponseModelV2> getDocumentByV2Id(@PathVariable @NotEmpty String id) { // "Nesnenin içindeki validation kurallarını kontrol et."
+    @GetMapping(value="/{id}", produces = "application/vnd.api.v2+json")
+    public ResponseEntity<ElasticQueryServiceResponseModelV3> getDocumentById2(@PathVariable @NotEmpty String id) { // "Nesnenin içindeki validation kurallarını kontrol et."
 
         ElasticQueryServiceResponseModel response = elasticQueryService.getDocumentById(id);
 
-        return ResponseEntity.ok(documentModelMapper.toV2Model(response));
+        return ResponseEntity.ok( objectMapper.toV3Model(response));
     }
    // HTTP standartlarında GET isteklerinin bir Body (gövde) taşıması yasaktır veya önerilmez. Veriler sadece URL'in sonuna eklenerek (?text=merve) gönderilebilir.
-   @PostMapping("/v1/get-document-by-text")
+   @PostMapping("/get-document-by-text")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody String text) {
         List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
         return ResponseEntity.ok(response);
-    }
-    @PostMapping("/v2/get-document-by-text")
-    public ResponseEntity<List<ElasticQueryServiceResponseModelV2>> getDocumentByTextV2(@RequestBody String text) {
-        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
-        List<ElasticQueryServiceResponseModelV2>  response2 = response.stream().map(
-                documentModelMapper::toV2Model
-        ).toList();
-        return ResponseEntity.ok(response2);
     }
 //    Controller Java nesnesi döndürür. DispatcherServlet, HTTP cevabını hazırlarken uygun
 //    HttpMessageConverter'ı seçer. JSON isteniyorsa MappingJackson2HttpMessageConverter,
