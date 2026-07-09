@@ -1,6 +1,8 @@
 package com.microservices.demo.elastic.query.service.config;
 
+import com.microservices.demo.config.SecurityProperties;
 import com.microservices.demo.config.UserConfigData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.swing.*;
 
@@ -20,9 +23,17 @@ import javax.swing.*;
 public class WebSecurityConfig {
     private final UserConfigData userConfigData;
 
-    public WebSecurityConfig(UserConfigData userConfigData) {
+//    @Value("${security.paths-to-ignore[0]}")
+//    private String firstPath;
+
+    SecurityProperties securityProperties;
+
+    public WebSecurityConfig(UserConfigData userConfigData, SecurityProperties securityProperties) {
         this.userConfigData = userConfigData;
+        this.securityProperties=securityProperties;
+        System.out.println("test2 : "+securityProperties.getPathsToIgnore());
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,8 +46,10 @@ public class WebSecurityConfig {
 
                 // 3. İsteklerin kurallarını (Yetkilendirmeyi) tanımlıyoruz.
                 .authorizeHttpRequests(auth -> auth
-                        // Tüm endpoint'lere (/**) erişebilmek için kullanıcının "USER" rolüne sahip olması şarttır.
-                        .requestMatchers("/**").hasRole("USER")
+                        .requestMatchers(
+securityProperties.getPathsToIgnore().toArray(new String[0])
+                        ).permitAll()
+                        .anyRequest().hasRole("USER")
                 );
         return http.build();
     }
