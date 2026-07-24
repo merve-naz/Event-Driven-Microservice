@@ -16,7 +16,8 @@
 		<module>elastic</module>
 		<module>common-util</module>
 		<module>elastic-query-service</module>
-	</modules>
+        <module>elastic/elastic-query-web-client</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -45,6 +46,7 @@
 		<spring-jasypt.version>3.0.5</spring-jasypt.version>
 		<spring-boot-security.version>3.2.4</spring-boot-security.version>
 		<springdoc-openapi-version>2.4.0</springdoc-openapi-version>
+		<spring-cloud-loadbalancer.version>4.1.4</spring-cloud-loadbalancer.version>
 
 
 	</properties>
@@ -182,6 +184,11 @@
 				<artifactId>spring-boot-starter-security</artifactId>
 				<version>${spring-boot-security.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-loadbalancer</artifactId>
+				<version>${spring-cloud-loadbalancer.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>io.confluent</groupId>
@@ -276,12 +283,6 @@
 			</plugins>
 		</pluginManagement>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 
 </project>

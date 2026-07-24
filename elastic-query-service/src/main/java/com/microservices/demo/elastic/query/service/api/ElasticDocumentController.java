@@ -4,6 +4,7 @@ package com.microservices.demo.elastic.query.service.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.demo.elastic.query.service.business.ElasticQueryService;
 import com.microservices.demo.elastic.query.service.mapper.DocumentModelMapper;
+import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceRequestModel;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV2;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import jakarta.validation.constraints.NotEmpty;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,8 @@ public class ElasticDocumentController {
     private final ElasticQueryService elasticQueryService;
     private final DocumentModelMapper documentModelMapper;
 
-
+    @Value("${server.port}")
+    private String port;
     public ElasticDocumentController(ElasticQueryService elasticQueryService, DocumentModelMapper documentModelMapper) {
         this.elasticQueryService = elasticQueryService;
         this.documentModelMapper = documentModelMapper;
@@ -57,7 +60,9 @@ public class ElasticDocumentController {
     @GetMapping("/v1")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocument() {
        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getAllDocuments();
-        LOG.info("Getting document from elastic query service: ",response.size());
+        LOG.info("Elasticsearch returned {} of documents on port {}",
+                response.size(),
+                port);
        return ResponseEntity.ok(response);
     }
 
@@ -132,8 +137,10 @@ public class ElasticDocumentController {
     }
    // HTTP standartlarında GET isteklerinin bir Body (gövde) taşıması yasaktır veya önerilmez. Veriler sadece URL'in sonuna eklenerek (?text=merve) gönderilebilir.
     @PostMapping("/v1/get-document-by-text")
-    public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody String text) {
-        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
+    public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody ElasticQueryServiceRequestModel request) {
+        System.out.println("TEXT = " + request.getText());
+        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(request.getText());
+        System.out.println("Tut: " + response+" port: "+port)  ;
         return ResponseEntity.ok(response);
     }
 
@@ -165,8 +172,8 @@ public class ElasticDocumentController {
             }
     )
     @PostMapping("/v2/get-document-by-text")
-    public ResponseEntity<List<ElasticQueryServiceResponseModelV2>> getDocumentByTextV2(@RequestBody String text) {
-        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(text);
+    public ResponseEntity<List<ElasticQueryServiceResponseModelV2>> getDocumentByTextV2(@RequestBody ElasticQueryServiceRequestModel request) {
+        List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(request.getText());
         List<ElasticQueryServiceResponseModelV2>  response2 = response.stream().map(
                 documentModelMapper::toV2Model
         ).toList();

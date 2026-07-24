@@ -3,7 +3,7 @@ spring:
     name: config-client
 
   profiles:
-    active: elastic_query
+    active: elastic_query_web
 
   cloud:
     config:
@@ -11,4 +11,4 @@ spring:
       password: "{cipher}920d17bb6955246f94607ccb67d2a39b0088b853d109bf9198b8dec2ee48f450"
 
   config:
-    import: "configserver:"
+    import: "configserver:http://localhost:8888"
