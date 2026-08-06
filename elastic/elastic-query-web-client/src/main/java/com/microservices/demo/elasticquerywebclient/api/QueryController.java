@@ -22,7 +22,6 @@ import java.util.List;
 @Controller
 public class QueryController {
 
-    // Logger: Konsola log (bilgi/hata) yazmak için kullanılır.
     private static final Logger LOG =
             LoggerFactory.getLogger(QueryController.class);
 
@@ -69,7 +68,6 @@ public class QueryController {
             // Controller'dan Thymeleaf'e veri göndermek için kullanılır.
             Model model) {
 
-        // Aranan metni loga yazar.
         LOG.info("Querying with text {}");
 
         // Sonuçları tutacak liste oluşturulur.
