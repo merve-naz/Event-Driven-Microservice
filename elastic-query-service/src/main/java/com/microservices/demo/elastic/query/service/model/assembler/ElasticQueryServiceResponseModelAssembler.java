@@ -2,15 +2,12 @@ package com.microservices.demo.elastic.query.service.model.assembler;
 
 import com.microservices.demo.elastic.model.index.impl.TwitterIndexModel;
 import com.microservices.demo.elastic.query.service.api.ElasticDocumentController;
-import com.microservices.demo.elastic.query.service.business.impl.TwitterElasticQueryService;
-import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
-import com.microservices.demo.elastic.query.service.transformer.ElasticToResponseModelTransformer;
+import com.microservices.demo.elastic.query.service.common.model.ElasticQueryServiceResponseModel;
+import com.microservices.demo.elastic.query.service.common.transformer.ElasticToResponseModelTransformer;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

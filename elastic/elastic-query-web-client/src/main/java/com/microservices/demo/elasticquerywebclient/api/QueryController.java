@@ -5,8 +5,9 @@ package com.microservices.demo.elasticquerywebclient.api;
 // =>return edilen String'i view adı olarak kabul eder.
 // // Spring, resources/templates/ klasöründe aynı isimli .html dosyasını arar.
 
-import com.microservices.demo.elasticquerywebclient.model.ElasticQueryWebClientRequestModel;
-import com.microservices.demo.elasticquerywebclient.model.ElasticQueryWebClientResponseModel;
+
+import com.microservices.demo.elastic.query.web.client.common.model.ElasticQueryWebClientRequestModel;
+import com.microservices.demo.elastic.query.web.client.common.model.ElasticQueryWebClientResponseModel;
 import com.microservices.demo.elasticquerywebclient.service.ElasticQueryWebClient;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -94,3 +95,15 @@ public class QueryController {
         return "home";
     }
 }
+
+//MVC Uygulaması
+//      │
+//Tomcat üzerinde çalışıyor
+//      │
+//              ├──────────────► Tarayıcıdan istek alıyor
+//      │
+//              │
+//              └──────────────► WebClient ile başka servise istek atıyor
+//                          │
+//                                  ▼
+//Reactor Netty

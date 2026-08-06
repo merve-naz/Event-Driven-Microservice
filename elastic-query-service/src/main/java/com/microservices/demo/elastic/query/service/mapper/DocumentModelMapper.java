@@ -1,8 +1,7 @@
 package com.microservices.demo.elastic.query.service.mapper;
 
-import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
+import com.microservices.demo.elastic.query.service.common.model.ElasticQueryServiceResponseModel;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV2;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 @Component

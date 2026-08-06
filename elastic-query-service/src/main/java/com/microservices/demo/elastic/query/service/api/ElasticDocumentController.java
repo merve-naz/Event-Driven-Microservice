@@ -1,11 +1,10 @@
 package com.microservices.demo.elastic.query.service.api;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.demo.elastic.query.service.business.ElasticQueryService;
+import com.microservices.demo.elastic.query.service.common.model.ElasticQueryServiceRequestModel;
+import com.microservices.demo.elastic.query.service.common.model.ElasticQueryServiceResponseModel;
 import com.microservices.demo.elastic.query.service.mapper.DocumentModelMapper;
-import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceRequestModel;
-import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModel;
 import com.microservices.demo.elastic.query.service.model.ElasticQueryServiceResponseModelV2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,17 +12,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotEmpty;
-import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import java.lang.annotation.Documented;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
