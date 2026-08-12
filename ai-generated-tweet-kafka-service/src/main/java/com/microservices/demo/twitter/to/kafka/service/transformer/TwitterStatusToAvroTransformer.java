@@ -13,7 +13,7 @@ public class TwitterStatusToAvroTransformer {
 
         System.out.println("TwitterAvroModel: "+tweetText);
         return TwitterAvroModel.newBuilder()
-                .setId(tweetText.id())
+                .setId(System.currentTimeMillis())
                 .setUserId(tweetText.user().id())
                 .setText(tweetText.text())
                 .setCreatedAt(System.currentTimeMillis())
