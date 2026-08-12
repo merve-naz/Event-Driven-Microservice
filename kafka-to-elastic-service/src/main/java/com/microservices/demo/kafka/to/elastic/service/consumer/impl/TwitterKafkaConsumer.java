@@ -63,8 +63,9 @@ public class TwitterKafkaConsumer
                 "Topics with name {} is ready for operations!",
                 kafkaConfigData.getTopicNamesToCreate().toArray()
         );
-
-        Objects.requireNonNull(kafkaListenerEndpointRegistry).getListenerContainer(kafkaConsumerConfigData.getConsumerGroupId()).start();
+// KafkaListenerEndpointRegistry, @KafkaListener ile oluşturulan listener container'larını yönetir.
+        Objects.requireNonNull(kafkaListenerEndpointRegistry).
+                getListenerContainer(kafkaConsumerConfigData.getConsumerGroupId()).start();
     }
 
     @Override

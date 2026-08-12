@@ -32,7 +32,8 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
 
     private final ElasticQueryWebClientConfigData elasticQueryWebClientConfigData;
 
-    public TwitterElasticQueryWebClient(@Qualifier("webClientBuilder") WebClient.Builder webClientBuilder, ElasticQueryWebClientConfigData elasticQueryWebClientConfigData) {
+    public TwitterElasticQueryWebClient(@Qualifier("webClientBuilder") WebClient.Builder webClientBuilder,
+                                        ElasticQueryWebClientConfigData elasticQueryWebClientConfigData) {
         this.webClientBuilder = webClientBuilder;
         this.elasticQueryWebClientConfigData = elasticQueryWebClientConfigData;
     }
@@ -43,13 +44,13 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
                 // Builder'dan gerçek bir WebClient nesnesi oluşturur.
                 .build()
 
-                // HTTP metodunu belirler (GET, POST, PUT vb.)
+                //tek bir HTTP request'in özelliklerini belirler. (HTTP method, endpoint, header, body vb.)
                 .method(HttpMethod.valueOf(
                         elasticQueryWebClientConfigData
                                 .getQueryByText()
                                 .getMethod()))
 
-                // İsteğin gönderileceği endpoint'i belirler.
+                // İsteğin gönderileceği endpoint'i belirler. /get-doc-by-text
                 .uri(elasticQueryWebClientConfigData
                         .getQueryByText()
                         .getUri())
@@ -77,7 +78,7 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
                         )
                 )
 
-                // HTTP isteğini gönderir ve ResponseSpec döndürür.
+                // HTTP isteğini gönderir ve ResponseSpec döndürür.(LoadBalancer devreye giriyor.)
                 .retrieve()
                 .onStatus(
 
@@ -88,13 +89,11 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
                 clientResponse ->
                         Mono.just(new BadCredentialsException("Not authenticated!"))
         )
-
                 .onStatus(
 
                         // Eğer status kodu herhangi bir 4xx ise...
                         status -> status.is4xxClientError(),
 
-                        // ElasticQueryWebClientException oluştur.
 
                         // ElasticQueryWebClientException oluştur.
                         clientResponse -> {
@@ -113,8 +112,6 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
                         status -> status.is5xxServerError(),
 
                         // Genel Exception oluştur.
-
-
                         // ElasticQueryWebClientException oluştur.
                         clientResponse -> {
                             HttpStatus httpStatus =
@@ -135,7 +132,7 @@ public class TwitterElasticQueryWebClient  implements ElasticQueryWebClient {
         // Aranan metni log'a yazar.
         LOG.info("Querying by text {}", requestModel.getText());
 
-        return getWebClient(requestModel)
+        return getWebClient(requestModel)//getWebClient(requestModel) başka bir servise HTTP request gönderiyor.
 
                 // HTTP response body'sini okur.
                 .bodyToFlux(ElasticQueryWebClientResponseModel.class) //Flux<ResponseModel>

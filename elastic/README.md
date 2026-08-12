@@ -16,7 +16,7 @@ ElasticConfigData
         │
         ▼
 ElasticsearchConfig
-        │
+        │[TwitterElasticIndexClient.java](elastic-index-client%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmicroservices%2Fdemo%2Felastic%2Findex%2Fclient%2Fservice%2Fimpl%2FTwitterElasticIndexClient.java)
         ▼
 ElasticsearchOperations
         │
@@ -209,5 +209,15 @@ elastic-query-client
     ▼
 Elasticsearch
 ```
+### Spring Cloud LoadBalancer
 
+- `@LoadBalanced`: Activates the LoadBalancer when WebClient sends a request.
+- The LoadBalancer checks the service name in WebClient's `base-url` (`elastic-query-service`).
+- This name matches `@LoadBalancerClient(name = "elastic-query-service")`.
+- `ServiceInstanceListSupplier` provides the available instances (`8183`, `8185`).
+- The LoadBalancer selects one instance and WebClient sends the request to it.
+
+Flow:
+WebClient → @LoadBalanced → Service Name → @LoadBalancerClient → Select Instance → Send Request
+********
 Overall, the elastic modules provide a complete integration with Elasticsearch. They cover client configuration, document modeling, indexing, querying, and HTTP-based communication through the Elastic Query Service. Together, these modules encapsulate the Elasticsearch infrastructure behind reusable components, making it easier for other services to interact with Elasticsearch without dealing with low-level implementation details.

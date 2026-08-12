@@ -43,12 +43,7 @@ public class WebClientConfig { //Giden isteği yönetir.
         this.userConfigData = userData;
     }
 
-    @LoadBalanced//@LoadBalanced → O servis adını gerçek IP'ye çevirir ve birden fazla instance varsa birini seçer.
-    // Aynı servisin birden fazla instance'ı varsa yük dengelemesi yapar.
-//@LoadBalanced aslında Bean'e bir özellik (davranış) katan bir anotasyondur.
-    //@LoadBalanced IP'leri kendi içinde tutmaz. IP'leri Service Discovery'den (genellikle Eureka) alır.
-   //Spring, Builder'dan üretilecek bütün WebClient'lara LoadBalancer özelliğini ekliyor.
-    //bu Builder ile oluşturulan her WebClient, servis adlarını (http://elastic-query-service) anlayabiliyor.
+    @LoadBalanced
     @Bean("webClientBuilder")
         // Ortak ayarlara sahip bir WebClient.Builder Bean'i oluşturur.
     WebClient.Builder webClientBuilder() {
