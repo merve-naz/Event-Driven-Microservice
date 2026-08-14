@@ -48,8 +48,6 @@ public class WebClientConfig { //Giden isteği yönetir.
         // Ortak ayarlara sahip bir WebClient.Builder Bean'i oluşturur.
     WebClient.Builder webClientBuilder() {
 
-        System.out.println("111: "+ elasticQueryWebClientConfigData.getBaseUrl());
-
         return WebClient.builder()
 
                 // Her HTTP isteğine otomatik Basic Authentication ekler.
