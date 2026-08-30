@@ -1,77 +1,105 @@
 package com.microservices.demo.elastic.query.service.config;
 
-import com.microservices.demo.config.SecurityProperties;
-import com.microservices.demo.config.UserConfigData;
+import com.microservices.demo.elastic.query.service.security.TwitterQueryUserDetailsService;
+import com.microservices.demo.elastic.query.service.security.TwitterQueryUserJwtConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.swing.*;
 
 @Configuration
+@EnableMethodSecurity
 public class WebSecurityConfig {
-    private final UserConfigData userConfigData;
 
-//    @Value("${security.paths-to-ignore[0]}")
-//    private String firstPath;
+    private final TwitterQueryUserDetailsService twitterQueryUserDetailsService;
 
-    SecurityProperties securityProperties;
+    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
-    public WebSecurityConfig(UserConfigData userConfigData, SecurityProperties securityProperties) {
-        this.userConfigData = userConfigData;
-        this.securityProperties=securityProperties;
-        System.out.println("test2 : "+securityProperties.getPathsToIgnore());
+
+    public WebSecurityConfig(TwitterQueryUserDetailsService twitterQueryUserDetailsService, OAuth2ResourceServerProperties oAuth2ResourceServerProperties) {
+        this.twitterQueryUserDetailsService = twitterQueryUserDetailsService;
+        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
     }
 
+    @Value("${security.paths-to-ignore}")
+    private String[] pathsToIgnore;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {//uygulama başlarken Security Filter Chain'in kurallarını yapılandırır.
         http
-                // 1. Tarayıcının standart kullanıcı adı/şifre pop-up girişini (HTTP Basic) açıyoruz.
-                .httpBasic(Customizer.withDefaults()) //. Onun yerine tarayıcının kendi beyaz/gri renkli küçük pop-up giriş penceresini açar.
+                // 1. Session kullanma
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
 
-                // 2. REST API yaptığımız için CSRF korumasını devre dışı bırakıyoruz.
+                // 2. CSRF kapat
                 .csrf(csrf -> csrf.disable())
 
-                // 3. İsteklerin kurallarını (Yetkilendirmeyi) tanımlıyoruz.
+                // 3. Endpoint yetkilendirmesi
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-securityProperties.getPathsToIgnore().toArray(new String[0])
-                        ).permitAll()
-                        .anyRequest().hasRole("USER")
+                        .requestMatchers(pathsToIgnore).permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                // 4. Bearer JWT kullan
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwt ->
+                                jwt.jwtAuthenticationConverter(
+                                        twitterQueryUserJwtConverter()
+                                )
+                        )
                 );
-        return http.build();
-    }
 
+        return   http.build();
 
-    // veritabanına bağlanmadan bellek içinde (in-memory) sahte bir kullanıcı oluşturuyor.
-    // UserDetailsService = Kullanıcıyı bulan servis. Spring Security giriş yapılırken kullanıcı adını buna verir:
-    @Bean
-    public UserDetailsService sahteKullaniciOlusturucu() {
-        // // 1. Kullanıcı oluşturuluyor
-        UserDetails user = User.withUsername(userConfigData.getUsername())
-                .password(passwordEncoder().encode(userConfigData.getPassword()))
-                .roles(userConfigData.getRoles())
-                .build();
-        return new InMemoryUserDetailsManager(user); // 2. Kullanıcıyı bellek içinde saklayan servis oluşturuluyor ve döndürülüyor.
     }
 
     @Bean
-    protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    JwtDecoder jwtDecoder(
+            @Qualifier("elastic-query-service-audience-validator")
+            OAuth2TokenValidator<Jwt> audienceValidator) {
+        // 1. JWT'yi decode edip imzasını doğrulayacak JwtDecoder oluşturuluyor.
+        // Issuer adresinden gerekli bilgileri (örn. public key/JWK) buluyor.
+        NimbusJwtDecoder jwtDecoder =
+                (NimbusJwtDecoder) JwtDecoders.fromOidcIssuerLocation(
+                        oAuth2ResourceServerProperties.getJwt().getIssuerUri()
+                );
+
+        // 2. JWT'nin issuer'ı doğru mu kontrol edecek validator oluşturuluyor.
+        OAuth2TokenValidator<Jwt> withIssuer =
+                JwtValidators.createDefaultWithIssuer(
+                        oAuth2ResourceServerProperties.getJwt().getIssuerUri()
+                );
+
+        // 3. Issuer kontrolü + hocanın yazdığı audience kontrolü birleştiriliyor.
+        OAuth2TokenValidator<Jwt> withAudience =
+                new DelegatingOAuth2TokenValidator<>(
+                        withIssuer,
+                        audienceValidator
+                );
+
+        // 4. Bu kontroller JwtDecoder'a veriliyor.
+        jwtDecoder.setJwtValidator(withAudience);
+
+        // 5. Hazırlanan decoder Spring'e Bean olarak veriliyor.
+        return jwtDecoder;
     }
-   // nesneyi bir kere üretip Spring'in yönetim havuzuna (Application Context) bıraktıktan
-    // sonra, Spring Security giriş anında (yani çalışma zamanında/runtime)
-    // bu nesneyi otomatik olarak bulur ve senin adına kullanır.
+
+
+    @Bean
+    Converter<Jwt, ? extends AbstractAuthenticationToken> twitterQueryUserJwtConverter() {
+        return new TwitterQueryUserJwtConverter(twitterQueryUserDetailsService);
+    }
 }

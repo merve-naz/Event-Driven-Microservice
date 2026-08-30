@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:17
+    hostname: postgres
+
+    environment:
+      - POSTGRES_USER=postgres_admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=keycloak
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      # PostgreSQL verilerini kalıcı tut
+      - postgres-data:/var/lib/postgresql/data
+
+      # İlk kurulumda SQL scriptini çalıştır
+      - ./init-keycloak.sql:/docker-entrypoint-initdb.d/init-keycloak.sql
+
+    networks:
+      - kafka-net
+
+# Yukarıda kullandığımız volume'u Compose'a tanıtıyoruz
+volumes:
+  postgres-data:
+
+networks:
+  kafka-net:
+    external: true

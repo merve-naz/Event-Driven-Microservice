@@ -16,10 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@PreAuthorize("isAuthenticated()") // Bu anotasyon, tüm endpoint'lerin kimlik doğrulaması gerektirdiğini belirtir.
 @RestController
 @RequestMapping("/documents") //Spring MVC, MappingJackson2HttpMessageConverter aracılığıyla bu nesneyi Jackson (ObjectMapper) kullanarak JSON'a çeviriyor.
 public class ElasticDocumentController {
@@ -59,7 +62,6 @@ public class ElasticDocumentController {
                 port);
        return ResponseEntity.ok(response);
     }
-
 
     @Operation(summary = "Get  elastic document by id.")
     @ApiResponses(
@@ -111,7 +113,7 @@ public class ElasticDocumentController {
                             description = "Successfully retrieved document."),
                     @ApiResponse(
                             responseCode = "404",
-                            content = {
+                           content = {
                                     @Content(
                                             mediaType = "application/json",
                                             schema = @Schema(
@@ -130,6 +132,15 @@ public class ElasticDocumentController {
         return ResponseEntity.ok(documentModelMapper.toV2Model(response));
     }
    // HTTP standartlarında GET isteklerinin bir Body (gövde) taşıması yasaktır veya önerilmez. Veriler sadece URL'in sonuna eklenerek (?text=merve) gönderilebilir.
+   //Authentication nesnesinin içindeki authorities listesini kontrol eder.
+//    hasRole("ADMIN")
+//→ ROLE_ prefixini otomatik ekler
+//→ ROLE_ADMIN arar
+//
+//    hasAuthority("SCOPE_read")
+//→ prefix eklemez
+//→ SCOPE_read'i aynen arar
+   @PreAuthorize("hasRole('APP_USER_ROLE') || hasAuthority('SCOPE_APP_USER_ROLE')")
     @PostMapping("/v1/get-document-by-text")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody ElasticQueryServiceRequestModel request) {
         System.out.println("TEXT = " + request.getText());

@@ -1,0 +1,51 @@
+services:
+  keycloak-authorization-server:
+    # Güncel Keycloak image'ı
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:-26.7.1}
+
+    # Container hostname'i
+    hostname: keycloak-server
+
+    # Development modunda başlat
+    command: start-dev
+
+    # Host portu : Container portu
+    ports:
+      - "8081:8081"
+
+    environment:
+      # Keycloak'ın kendi admin hesabı
+      - "KC_BOOTSTRAP_ADMIN_USERNAME=admin"
+      - "KC_BOOTSTRAP_ADMIN_PASSWORD=admin"
+
+      # Keycloak HTTP portu
+      - "KC_HTTP_PORT=8081"
+
+      # Veritabanı türü
+      - "KC_DB=postgres"
+
+      # PostgreSQL service adı
+      - "KC_DB_URL_HOST=postgres"
+
+      # PostgreSQL portu
+      - "KC_DB_URL_PORT=5432"
+
+      # PostgreSQL database adı
+      - "KC_DB_URL_DATABASE=keycloak"
+
+      # PostgreSQL'e bağlanacak kullanıcı
+      - "KC_DB_USERNAME=keycloak_user"
+
+      # PostgreSQL kullanıcı şifresi
+      - "KC_DB_PASSWORD=keycloak123"
+
+      # Kullanılacak PostgreSQL schema
+      - "KC_DB_SCHEMA=keycloak"
+
+    # PostgreSQL ile aynı Docker network'ü
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    external: true

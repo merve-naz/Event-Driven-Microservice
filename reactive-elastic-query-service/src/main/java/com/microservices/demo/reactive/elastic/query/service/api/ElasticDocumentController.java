@@ -23,14 +23,12 @@ import java.net.http.WebSocket;
 @RequestMapping("/documents")
 public class ElasticDocumentController {
     //Reactive'de normal MVC gibi bütün sonuçları bekleyip tek seferde dönmezsin.
-    // Uygulama loglarını yazmak için kullanılır.
     private static final Logger LOG =
             LoggerFactory.getLogger(ElasticDocumentController.class);
 
-    // İş mantığını gerçekleştiren Service katmanı.
+
     private final ElasticQueryService elasticQueryService;
 
-    // Constructor Injection (Spring bu servisi otomatik enjekte eder.)
     public ElasticDocumentController(ElasticQueryService queryService) {
         this.elasticQueryService = queryService;
     }
@@ -41,10 +39,8 @@ public class ElasticDocumentController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE // Cevap Flux olarak stream (SSE) şeklinde gönderilecek.
     )// Spring, Flux'tan gelen verileri SSE formatında istemciye gönderiyor.
     public Flux<ElasticQueryServiceResponseModel> getDocumentByText(
-
             @RequestBody @Valid ElasticQueryServiceRequestModel requestModel) {
 
-        // Service katmanını çağırıp Elasticsearch'ten gelen reactive sonucu alıyoruz.
         Flux<ElasticQueryServiceResponseModel> response =
                 elasticQueryService.getDocumentsByText(requestModel.getText());
 
@@ -54,14 +50,7 @@ public class ElasticDocumentController {
 
         LOG.info("Returning from query reactive service for text {}!",
                 requestModel.getText());
-
-        // Flux'ı Spring WebFlux'a döndürüyoruz.
-        // Spring subscribe olur ve verileri client'a chunk chunk gönderir.
         return response;
-//        Spring WebFlux bunu görünce şöyle düşünür:
-//        "Bu bir Flux. Önce buna subscribe olayım."
-//        Sonra Flux'tan gelen her bir ElasticQueryServiceResponseModel nesnesini alır.
-//        Her nesne için yine Jackson çalışır:
     }
 }
 //Flux = Veri tipi (Reactive Stream)

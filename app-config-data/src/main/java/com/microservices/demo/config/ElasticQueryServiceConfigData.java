@@ -9,5 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "elastic-query-service")
 public class ElasticQueryServiceConfigData { //reactive elastıc query servici ıcın.
     private String version;
+    private String customAudience;//, Elastic Query Service'in JWT içinde beklediği audience değeridir.
     private Long backPressureDelayMs; //"Her eleman işlendiğinde kaç milisaniye bekleyeyim?"
 }
