@@ -11,4 +11,7 @@ public class ElasticQueryServiceConfigData { //reactive elastıc query servici �
     private String version;
     private String customAudience;//, Elastic Query Service'in JWT içinde beklediği audience değeridir.
     private Long backPressureDelayMs; //"Her eleman işlendiğinde kaç milisaniye bekleyeyim?"
+    public String getCustomAudience() {
+        return customAudience;
+    }
 }

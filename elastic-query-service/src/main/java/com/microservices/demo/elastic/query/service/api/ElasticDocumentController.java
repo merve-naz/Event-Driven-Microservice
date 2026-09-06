@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +37,8 @@ public class ElasticDocumentController {
         this.elasticQueryService = elasticQueryService;
         this.documentModelMapper = documentModelMapper;
     }
-
-    @Operation(summary = "Get all elastic documents.") // Bu anotasyon, endpoint'in ne yaptığını Swagger UI'da gösterir.
+    @PostAuthorize("hasPermission(returnObject, 'READ')")
+   @Operation(summary = "Get all elastic documents.") // Bu anotasyon, endpoint'in ne yaptığını Swagger UI'da gösterir.
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -63,6 +64,8 @@ public class ElasticDocumentController {
        return ResponseEntity.ok(response);
     }
 
+
+    @PreAuthorize("hasPermission(#id, 'ElasticQueryServiceResponseModel','READ')")
     @Operation(summary = "Get  elastic document by id.")
     @ApiResponses(
             value = {
@@ -140,8 +143,9 @@ public class ElasticDocumentController {
 //    hasAuthority("SCOPE_read")
 //→ prefix eklemez
 //→ SCOPE_read'i aynen arar
-   @PreAuthorize("hasRole('APP_USER_ROLE') || hasAuthority('SCOPE_APP_USER_ROLE')")
-    @PostMapping("/v1/get-document-by-text")
+   @PreAuthorize("hasRole('APP_USER_ROLE') || hasRole('APP_SUPER_USER_ROLE') || hasAuthority('SCOPE_APP_USER_ROLE')")
+   @PostAuthorize("hasPermission(returnObject, 'READ')")
+@PostMapping("/v1/get-document-by-text")
     public ResponseEntity<List<ElasticQueryServiceResponseModel>> getDocumentByText(@RequestBody ElasticQueryServiceRequestModel request) {
         System.out.println("TEXT = " + request.getText());
         List<ElasticQueryServiceResponseModel> response = elasticQueryService.getDocumentsByText(request.getText());

@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.swing.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 
 @Builder
+@Getter
 public class TwitterQueryUser implements UserDetails {
 
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
+
+    private Map<String, PermissionType> permissions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
